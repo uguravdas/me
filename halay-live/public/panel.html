@@ -25,7 +25,7 @@
 <h2>İzleyici</h2>
 <div class="row">
   <input id="name" placeholder="İsim (boşsa rastgele)">
-  <button data-n="1">+1 kişi katılsın</button>
+  <button data-n="1">+1 kişi (1 jetonluk hediye)</button>
   <button data-n="10">+10 kişi</button>
   <button data-n="50">+50 kişi</button>
 </div>
@@ -52,7 +52,7 @@ const pick=a=>a[Math.random()*a.length|0];
 function newUser(){const v=document.getElementById('name').value.trim();const u={id:'sim'+(++seq),name:v||pick(NAMES)+(seq>NAMES.length?seq:'')};users.push(u);return u;}
 const someUser=()=>users.length?pick(users):newUser();
 const send=e=>fetch('/api/event',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(e)});
-document.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>{for(let i=0;i<+b.dataset.n;i++)send({type:'like',user:newUser(),count:1});});
+document.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>{for(let i=0;i<+b.dataset.n;i++)send({type:'gift',user:newUser(),giftName:'Sim',unit:1,count:1,coins:1});});
 document.querySelectorAll('[data-ev]').forEach(b=>b.onclick=()=>{const t=b.dataset.ev;send({type:t,user:someUser(),count:+b.dataset.count||1,comment:pick(['lülülüüü','vay vay','helal olsun','oyna oyna','düğün var 😂'])});});
 document.getElementById('reset').onclick=()=>{users.length=0;send({type:'reset'});};
 fetch('/api/config').then(r=>r.json()).then(cfg=>{

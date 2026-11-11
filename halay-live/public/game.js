@@ -581,7 +581,7 @@ if (qs.has('demo')) {
   const N = ['Ayşe', 'Mehmet', 'Elif 🌸', 'Can', 'Zeynep', 'Emre', 'Deniz', 'Buse', 'Kerem', 'Selin', 'Umutcan', 'Ceyda', 'Berat', 'İpek', 'Ramazan H.', 'Mira', 'Yasemin', 'Alihan', 'Sude', 'Necdet'];
   const mk = (i) => ({ id: 'demo' + i, name: pick(N) + (i > 19 ? i : '') });
   const n = Number(qs.get('demo')) || 40;
-  for (let i = 0; i < n; i++) onEvent({ type: 'like', user: mk(i), count: (Math.random() * 30) | 0 });
+  for (let i = 0; i < n; i++) { onEvent({ type: 'gift', user: mk(i), unit: 1, coins: 1 }); onEvent({ type: 'like', user: mk(i), count: (Math.random() * 30) | 0 }); }
   [20, 30, 99, 199, 299].forEach((unit, i) => onEvent({ type: 'gift', user: mk(i), unit, coins: unit }));
   setInterval(() => onEvent({ type: 'chat', user: mk((Math.random() * n) | 0), comment: pick(['lülülüüü', 'vay vay', 'helal', 'oyna oyna', 'düğün var 😂']) }), 1500);
 }
