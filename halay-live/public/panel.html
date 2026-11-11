@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Halay Live · Kontrol Paneli</title>
+<style>
+  body{font-family:"Segoe UI",system-ui,Arial,sans-serif;background:#16131f;color:#eee;margin:0;padding:20px;max-width:760px;margin:auto}
+  h1{font-size:22px;margin:0 0 4px} h2{font-size:14px;color:#ffd23f;letter-spacing:.06em;margin:22px 0 8px;text-transform:uppercase}
+  p{color:#aaa;margin:4px 0 0;font-size:14px}
+  .row{display:flex;flex-wrap:wrap;gap:8px}
+  button{background:#2b2540;color:#fff;border:1px solid #4a4266;border-radius:10px;padding:10px 14px;font-size:15px;font-weight:600;cursor:pointer}
+  button:hover{background:#3a3158} button:active{transform:scale(.97)}
+  button.gift{background:#5a1630;border-color:#a32a55} button.danger{background:#5a1616;border-color:#a33}
+  input{background:#0f0d17;color:#fff;border:1px solid #4a4266;border-radius:10px;padding:10px;font-size:15px}
+  #st{font-size:13px;color:#8f8;margin-top:6px}
+  a{color:#7cc4ff}
+</style>
+</head>
+<body>
+<h1>Halay Live · Kontrol Paneli</h1>
+<p>Yayın açmadan oyunu test etmek için sahte olay gönderir. Oyun ekranı: <a href="/" target="_blank">localhost (yeni sekme)</a></p>
+<div id="st"></div>
+
+<h2>İzleyici</h2>
+<div class="row">
+  <input id="name" placeholder="İsim (boşsa rastgele)">
+  <button data-n="1">+1 kişi katılsın</button>
+  <button data-n="10">+10 kişi</button>
+  <button data-n="50">+50 kişi</button>
+</div>
+
+<h2>Etkileşim (seçili / rastgele kişi)</h2>
+<div class="row">
+  <button data-ev="like" data-count="15">❤️ 15 beğeni</button>
+  <button data-ev="like" data-count="250">❤️ 250 beğeni</button>
+  <button data-ev="follow">➕ Takip</button>
+  <button data-ev="share">↗️ Paylaş</button>
+  <button data-ev="chat">💬 Yorum</button>
+</div>
+
+<h2>Hediyeler</h2>
+<div class="row" id="gifts"></div>
+
+<h2>Yönetim</h2>
+<div class="row"><button class="danger" id="reset">Halayı sıfırla</button></div>
+
+<script>
+const NAMES=['Ayşe','Mehmet','Elif','Can','Zeynep','Emre','Deniz','Buse','Kerem','Selin','Umutcan','Ceyda','Berat','İpek','Ramazan','Mira','Yasemin','Alihan','Sude','Necdet','Betül','Çolak','Kaan','Ece','Tuna'];
+const users=[]; let seq=0;
+const pick=a=>a[Math.random()*a.length|0];
+function newUser(){const v=document.getElementById('name').value.trim();const u={id:'sim'+(++seq),name:v||pick(NAMES)+(seq>NAMES.length?seq:'')};users.push(u);return u;}
+const someUser=()=>users.length?pick(users):newUser();
+const send=e=>fetch('/api/event',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(e)});
+document.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>{for(let i=0;i<+b.dataset.n;i++)send({type:'like',user:newUser(),count:1});});
+document.querySelectorAll('[data-ev]').forEach(b=>b.onclick=()=>{const t=b.dataset.ev;send({type:t,user:someUser(),count:+b.dataset.count||1,comment:pick(['lülülüüü','vay vay','helal olsun','oyna oyna','düğün var 😂'])});});
+document.getElementById('reset').onclick=()=>{users.length=0;send({type:'reset'});};
+fetch('/api/config').then(r=>r.json()).then(cfg=>{
+  const box=document.getElementById('gifts');
+  for(const t of cfg.giftTiers){const b=document.createElement('button');b.className='gift';b.textContent=`${t.emoji} ${t.label} (${t.minCoins} jeton)`;
+    b.onclick=()=>send({type:'gift',user:someUser(),giftName:'Sim',unit:t.minCoins,count:1,coins:t.minCoins});box.append(b);}
+});
+const st=()=>fetch('/api/status').then(r=>r.json()).then(s=>document.getElementById('st').textContent=s.user?`TikTok: @${s.user} · ${s.tiktok}`:'TikTok bağlı değil (simülatör modu)');
+st();setInterval(st,5000);
+</script>
+</body>
+</html>

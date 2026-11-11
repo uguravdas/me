@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Halay Live</title>
+<style>
+  html,body{margin:0;height:100%;background:#0b1020;overflow:hidden;font-family:"Segoe UI",system-ui,Arial,sans-serif}
+  /* Sahne her zaman 9:16 ve pencerenin ortasinda. Tum HUD olculeri sahne genisligine (--u) bagli. */
+  #stage{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    height:100vh;width:56.25vh;max-width:100vw;max-height:177.78vw;overflow:hidden;--u:calc(min(56.25vh,100vw)/100)}
+  canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+  #labels,#hud{position:absolute;inset:0;pointer-events:none}
+  .tag{position:absolute;left:0;top:0;display:flex;align-items:center;gap:.35em;white-space:nowrap;
+    background:rgba(20,16,30,.72);color:#fff;font-weight:700;border-radius:99em;padding:.12em .6em .12em .12em;
+    transform-origin:50% 100%;will-change:transform;font-size:calc(var(--u)*2.6)}
+  .tag img,.tag .ini{width:1.7em;height:1.7em;border-radius:50%;object-fit:cover;border:.1em solid #fff;flex:none}
+  .tag .ini{display:grid;place-items:center;font-size:1em;color:#fff}
+  .tag .ini b{font-size:.9em}
+  .tag .role{font-size:.7em;color:#ffd23f;display:block;line-height:1}
+  .tag .nm{line-height:1.05;max-width:9em;overflow:hidden;text-overflow:ellipsis}
+  .tag.vip{background:rgba(120,20,60,.85);outline:.12em solid #ffd23f}
+  .bubble{position:absolute;left:50%;bottom:115%;transform:translateX(-50%);background:#fff;color:#222;font-weight:600;
+    font-size:.8em;padding:.25em .6em;border-radius:.8em;max-width:14em;white-space:normal;text-align:center;line-height:1.15}
+
+  #title{position:absolute;top:14.2%;left:0;right:0;text-align:center;color:#ffd23f;font-weight:900;letter-spacing:.06em;
+    font-size:calc(var(--u)*5.4);text-shadow:0 .06em 0 #7a1030,0 0 .5em rgba(0,0,0,.8)}
+  #legend{position:absolute;top:18.6%;left:2%;right:2%;display:flex;flex-wrap:wrap;justify-content:center;gap:calc(var(--u)*.8)}
+  #legend span{background:rgba(15,12,25,.7);color:#fff;font-weight:800;border-radius:99em;
+    padding:.25em .7em;font-size:calc(var(--u)*2.25)}
+  #legend i{font-style:normal;color:#ffd23f;margin-left:.3em}
+  #board{position:absolute;top:27%;left:2.5%;width:40%;background:rgba(15,12,25,.6);border-radius:calc(var(--u)*2);
+    padding:calc(var(--u)*1.2);color:#fff;font-size:calc(var(--u)*2.5)}
+  #board h4{margin:0 0 .3em;color:#ffd23f;font-size:.9em;letter-spacing:.08em}
+  #rows div{display:flex;justify-content:space-between;gap:.5em;font-weight:700;line-height:1.5}
+  #rows div span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  #rows div span:last-child{color:#ff8fb1}
+  #count{position:absolute;top:27%;right:2.5%;text-align:right;color:#fff;font-weight:900;font-size:calc(var(--u)*3);
+    text-shadow:0 0 .4em #000}
+  #count b{color:#ffd23f;font-size:1.5em}
+  #goal{position:absolute;top:35%;right:2.5%;width:38%;color:#fff;font-size:calc(var(--u)*2.1);font-weight:700;text-align:right;text-shadow:0 0 .4em #000}
+  #goal .bar{height:calc(var(--u)*1.6);background:rgba(0,0,0,.55);border-radius:99em;overflow:hidden;margin-bottom:.3em;border:1px solid rgba(255,255,255,.4)}
+  #goal .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#ff4d6d,#ffd23f);transition:width .3s}
+  #banner{position:absolute;top:57%;left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:calc(var(--u)*.8)}
+  .ann{display:flex;align-items:center;gap:.4em;font-weight:900;color:#fff;font-size:calc(var(--u)*4);
+    text-shadow:0 .08em 0 #000,0 0 .5em #000;animation:pop 4s forwards}
+  .ann img,.ann .ini{width:1.5em;height:1.5em;border-radius:50%;border:.08em solid #fff;object-fit:cover;display:grid;place-items:center;font-size:1em}
+  .ann b{color:#ffd23f}
+  .ann.big{font-size:calc(var(--u)*5.2)}
+  @keyframes pop{0%{transform:scale(.3);opacity:0}8%{transform:scale(1.12);opacity:1}14%{transform:scale(1)}85%{opacity:1}100%{opacity:0;transform:translateY(-40%)}}
+  #fast{position:absolute;top:47%;left:0;right:0;text-align:center;font-weight:900;color:#fff;font-size:calc(var(--u)*7);
+    text-shadow:0 0 .3em #ff2d55,0 .06em 0 #7a1030;display:none;animation:blink .5s infinite alternate}
+  @keyframes blink{to{transform:scale(1.08);color:#ffd23f}}
+  #conn{position:absolute;bottom:.5%;right:1%;font-size:calc(var(--u)*1.5);color:rgba(255,255,255,.45)}
+  #tap{position:absolute;inset:0;display:none;place-items:center;background:rgba(0,0,0,.5);color:#fff;font-size:calc(var(--u)*4);font-weight:800;pointer-events:auto;cursor:pointer}
+</style>
+</head>
+<body>
+<div id="stage">
+  <canvas id="c"></canvas>
+  <div id="labels"></div>
+  <div id="hud">
+    <div id="title"></div>
+    <div id="legend"></div>
+    <div id="board"><h4>🏆 SIRALAMA</h4><div id="rows"></div></div>
+    <div id="count"><b id="n">0</b><br>kişi halayda</div>
+    <div id="goal"><div class="bar"><i id="goalbar"></i></div><span id="goaltxt"></span></div>
+    <div id="fast">🔥 HIZLI HALAY 🔥</div>
+    <div id="banner"></div>
+    <div id="conn"></div>
+    <div id="tap">🔊 Sesi başlatmak için tıkla</div>
+  </div>
+</div>
+<script type="importmap">{"imports":{"three":"/vendor/three/three.module.js"}}</script>
+<script type="module" src="game.js"></script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+{
+  "tiktokUsername": "",
+  "port": 3000,
+  "title": "ÇAYLAR HALAYDA",
+  "bpm": 112,
+  "maxDancers": 150,
+  "roleDurationSec": 180,
+  "join": {
+    "onFollow": true,
+    "onLike": true,
+    "onShare": true,
+    "chatKeywords": ["halay", "katıl", "katil", "ben"]
+  },
+  "points": { "like": 1, "follow": 20, "share": 10, "coin": 10 },
+  "likeGoal": { "target": 1000, "fastSeconds": 25 },
+  "giftTiers": [
+    { "minCoins": 1,   "action": "join",      "emoji": "🌹", "label": "HALAYA KATIL" },
+    { "minCoins": 5,   "action": "confetti",  "emoji": "🎉", "label": "KONFETİ" },
+    { "minCoins": 20,  "action": "zurnaci",   "emoji": "🎺", "label": "ZURNACI OL" },
+    { "minCoins": 30,  "action": "halaybasi", "emoji": "🍩", "label": "HALAY BAŞI OL" },
+    { "minCoins": 99,  "action": "davulcu",   "emoji": "🥁", "label": "DAVULCU OL" },
+    { "minCoins": 199, "action": "gelin",     "emoji": "👰", "label": "GELİN OL" },
+    { "minCoins": 299, "action": "damat",     "emoji": "🤵", "label": "DAMAT OL" },
+    { "minCoins": 500, "action": "money",     "emoji": "💸", "label": "PARA SAÇ" }
+  ],
+  "giftOverrides": {}
+}
