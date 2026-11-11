@@ -6,10 +6,10 @@
   "maxDancers": 150,
   "roleDurationSec": 180,
   "join": {
-    "onFollow": false,
-    "onLike": false,
-    "onShare": false,
-    "chatKeywords": []
+    "onFollow": true,
+    "onLike": true,
+    "onShare": true,
+    "chatKeywords": ["halay", "katıl", "katil", "ben"]
   },
   "points": { "like": 1, "follow": 20, "share": 10, "coin": 10 },
   "likeGoal": { "target": 1000, "fastSeconds": 25 },

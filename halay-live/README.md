@@ -1,7 +1,7 @@
 # Halay Live
 
-TikTok canlı yayını için interaktif halay/düğün oyunu. İzleyiciler hediye atarak halaya katılır
-(en ucuz hediye yeter); pahalı hediyeler rol verir (zurnacı, halay başı, davulcu, gelin, damat) ve efekt tetikler.
+TikTok canlı yayını için interaktif halay/düğün oyunu. İzleyiciler beğeni, takip, yorum ya da hediyeyle
+halaya katılır; pahalı hediyeler rol verir (zurnacı, halay başı, davulcu, gelin, damat) ve efekt tetikler.
 
 Karakterler özgün: ince belli çay bardakları.
 
@@ -37,7 +37,7 @@ desteklemez; ara sıra kopabilir.
 | `title` | Tabela ve ekran başlığı |
 | `giftTiers` | Hediyenin **birim jeton değeri** `minCoins` ve üstüyse hangi aksiyon olacağı |
 | `giftOverrides` | Belirli bir hediye adını doğrudan aksiyona bağlar, ör. `{"Rose": "join"}` |
-| `join` | Hediyesiz katılım yolları (takip / beğeni / paylaşım / yorum kelimesi). Varsayılan: hepsi kapalı |
+| `join` | Hediyesiz katılım yolları (takip / beğeni / paylaşım / yorum kelimesi). Varsayılan: hepsi açık; sadece hediyeyle katılım için hepsini kapat |
 | `points` | Beğeni, takip, paylaşım ve jeton başına puan (sıralama ve halaydaki yer) |
 | `likeGoal` | Kaç beğenide "Hızlı Halay" başlayacağı ve süresi |
 | `roleDurationSec` | Rolün süresi (0 = biri devralana kadar) |
